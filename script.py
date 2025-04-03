@@ -6,11 +6,21 @@ from typing import Tuple, Optional, Dict, Union
 """
 
 
+# def calculate_monthly_payment(principal: float, monthly_rate: float, months: int) -> float:
+#     """Izračunava mesečnu ratu koristeći formulu za anuitet."""
+#     if monthly_rate == 0:
+#         return principal / months
+#     return (principal * monthly_rate * (1 + monthly_rate) ** months) / ((1 + monthly_rate) ** months - 1)
+
+
 def calculate_monthly_payment(principal: float, monthly_rate: float, months: int) -> float:
-    """Izračunava mesečnu ratu koristeći formulu za anuitet."""
+    """Anuitetna formula sa tačnim zaokruživanjem"""
     if monthly_rate == 0:
-        return principal / months
-    return (principal * monthly_rate * (1 + monthly_rate) ** months) / ((1 + monthly_rate) ** months - 1)
+        return round(principal / months, 2)
+
+    factor = (1 + monthly_rate) ** months
+    payment = principal * monthly_rate * factor / (factor - 1)
+    return round(payment, 2)  # Bankarski standard - 2 decimalna mesta
 
 
 def calculate_interest_payment(remaining_principal: float, monthly_rate: float) -> float:
