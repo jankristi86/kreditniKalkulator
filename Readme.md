@@ -32,7 +32,7 @@ A comprehensive loan amortization calculator with detailed payment schedule, ext
 - Yearly summaries
 - Final loan summary with effective interest rate
 
-✅ - **Robust Testing**
+✅ **Robust Testing**
 - Unit tests for all calculation functions
 - Golden tests against industry standards
 - Edge case testing
