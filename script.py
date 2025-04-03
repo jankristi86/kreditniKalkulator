@@ -2,19 +2,26 @@ import sys
 from typing import Tuple, Optional, Dict, Union
 
 """
- Finansijski izračuni
+Financial calculations for loan amortization.
+
 """
 
 
-# def calculate_monthly_payment(principal: float, monthly_rate: float, months: int) -> float:
-#     """Izračunava mesečnu ratu koristeći formulu za anuitet."""
-#     if monthly_rate == 0:
-#         return principal / months
-#     return (principal * monthly_rate * (1 + monthly_rate) ** months) / ((1 + monthly_rate) ** months - 1)
-
-
 def calculate_monthly_payment(principal: float, monthly_rate: float, months: int) -> float:
-    """Anuitetna formula sa tačnim zaokruživanjem"""
+    """Calculates the monthly payment using the annuity formula with precise rounding.
+
+    Args:
+        principal: The initial loan amount
+        monthly_rate: Monthly interest rate (annual rate / 12)
+        months: Total number of payment months
+
+    Returns:
+        float: Monthly payment amount rounded to 2 decimal places
+
+    Note:
+        For zero-interest loans, simply divides principal by months.
+        Uses standard banking rounding (2 decimal places).
+    """
     if monthly_rate == 0:
         return round(principal / months, 2)
 
@@ -24,24 +31,47 @@ def calculate_monthly_payment(principal: float, monthly_rate: float, months: int
 
 
 def calculate_interest_payment(remaining_principal: float, monthly_rate: float) -> float:
-    """Izračunava iznos kamate za tekući mesec."""
+    """Calculates the interest portion of a monthly payment.
+
+    Args:
+        remaining_principal: Current loan balance before payment
+        monthly_rate: Monthly interest rate
+
+    Returns:
+        float: Interest amount for the current period
+    """
     return remaining_principal * monthly_rate
 
 
 """
- Prikaz i formatiranje
+Display and formatting functions.
 """
 
 
 def print_monthly_payment_details(month_num: int, monthly_payment: float,
                                   interest: float, principal: float, remaining: float):
-    """Štampa detalje o mesečnoj uplati."""
+    """Prints formatted monthly payment details in a table row.
+
+    Args:
+        month_num: Current month number in the schedule
+        monthly_payment: Total monthly payment amount
+        interest: Interest portion of payment
+        principal: Principal portion of payment
+        remaining: Remaining loan balance after payment
+    """
     print(
         f"{month_num:5} | {monthly_payment:12.2f} EUR | {interest:6.2f} EUR | {principal:15.2f} EUR | {remaining:12.2f} EUR")
 
 
 def print_yearly_summary(year: int, year_interest: float, year_principal: float, remaining: float):
-    """Štampa godišnji rezime otplate."""
+    """Prints a yearly summary of loan repayment progress.
+
+    Args:
+        year: Current year number
+        year_interest: Total interest paid in the year
+        year_principal: Total principal paid in the year
+        remaining: Remaining loan balance
+    """
     print("\nRezime za godinu:")
     print(f"Ukupno kamata: {year_interest:.2f} EUR")
     print(f"Ukupno glavnica: {year_principal:.2f} EUR")
@@ -49,7 +79,13 @@ def print_yearly_summary(year: int, year_interest: float, year_principal: float,
 
 
 def print_final_summary(initial_principal: float, total_interest: float, total_principal: float):
-    """Štampa konačne rezultate otplate."""
+    """Prints the final loan repayment summary with totals.
+
+    Args:
+        initial_principal: Original loan amount
+        total_interest: Total interest paid over loan term
+        total_principal: Total principal paid over loan term
+    """
     print("\n\nFINALNI REZIME:")
     print("=" * 40)
     print(f"Početni kredit: {initial_principal:,.2f} EUR")
@@ -62,13 +98,28 @@ def print_final_summary(initial_principal: float, total_interest: float, total_p
 
 
 """
- Glavna logika otplate
+Core repayment logic.
 """
 
 
 def process_yearly_payments(principal: float, monthly_rate: float, months: int,
                             yearly_extra: float, start_year: int = 2025) -> Tuple[float, float]:
-    """Obrada godišnjih plaćanja i vraća ukupne iznose kamata i glavnice."""
+    """Processes loan payments year by year with optional extra payments.
+
+    Args:
+        principal: Initial loan amount
+        monthly_rate: Monthly interest rate
+        months: Total number of payment months
+        yearly_extra: Additional annual principal payment
+        start_year: First year of repayment (default: 2025)
+
+    Returns:
+        Tuple[float, float]: (total_interest_paid, total_principal_paid)
+
+    Note:
+        Prints detailed amortization schedule and yearly summaries.
+        Handles early loan payoff if extra payments are sufficient.
+    """
     remaining = principal
     total_interest = 0.0
     total_principal = 0.0
@@ -117,7 +168,15 @@ def process_yearly_payments(principal: float, monthly_rate: float, months: int,
 
 
 def process_extra_payment(remaining: float, yearly_extra: float) -> float:
-    """Obrada godišnje prevremene otplate."""
+    """Processes an additional principal payment at year-end.
+
+    Args:
+        remaining: Current loan balance
+        yearly_extra: Requested extra payment amount
+
+    Returns:
+        float: Actual extra payment applied (may be less than requested if loan balance is lower)
+    """
     if yearly_extra > 0 and remaining > 0:
         extra = min(yearly_extra, remaining)
         print("\nPrevremena otplata na kraju godine:", f"{extra:.2f} EUR")
@@ -126,12 +185,24 @@ def process_extra_payment(remaining: float, yearly_extra: float) -> float:
 
 
 """
- Unos i validacija podataka
+Input handling and validation.
 """
 
 
 def get_user_input(prompt: str, input_type: type, default: Optional[float] = None) -> float:
-    """Obrada korisničkog unosa sa podrazumevanim vrednostima."""
+    """Gets and validates user input with optional default value.
+
+    Args:
+        prompt: Text prompt to display
+        input_type: Expected data type (float/int)
+        default: Default value if user enters nothing
+
+    Returns:
+        Validated user input
+
+    Raises:
+        ValueError: If input cannot be converted or is negative
+    """
     while True:
         try:
             user_input = input(f"{prompt} [{default}]: " if default else f"{prompt}: ")
@@ -146,7 +217,12 @@ def get_user_input(prompt: str, input_type: type, default: Optional[float] = Non
 
 
 def parse_command_line_args() -> Dict[str, Union[float, int]]:
-    """Parsiranje argumenata komandne linije."""
+    """Parses command line arguments for non-interactive mode.
+
+    Returns:
+        Dict: Parsed arguments as {'amount': float, 'rate': float, 'term': int, 'extra': float}
+        or empty dict if arguments are invalid/missing.
+    """
     if len(sys.argv) == 5:
         try:
             return {
@@ -161,14 +237,15 @@ def parse_command_line_args() -> Dict[str, Union[float, int]]:
 
 
 """
- Glavna funkcija
+Main program execution.
 """
 
 
 def main():
+    """Main entry point for the loan calculator application."""
     print("\nKALKULATOR KREDITA\n" + "=" * 40)
 
-    # Podrazumevane vrednosti
+    # Default values
     defaults = {
         'amount': 50000,
         'rate': 4.75,
@@ -176,7 +253,7 @@ def main():
         'extra': 0
     }
 
-    # Unos parametara
+    # Get parameters
     params = parse_command_line_args()
     principal = params.get('amount') or get_user_input("Unesite iznos kredita (EUR)", float, defaults['amount'])
     annual_rate = params.get('rate') or get_user_input("Unesite godišnju kamatnu stopu (%)", float, defaults['rate'])
@@ -184,11 +261,11 @@ def main():
     yearly_extra = params.get('extra') or get_user_input("Unesite godišnju prevremenu otplatu (EUR)", float,
                                                          defaults['extra'])
 
-    # Konverzija i izračun
+    # Convert and calculate
     monthly_rate = annual_rate / 100 / 12
     total_interest, total_principal = process_yearly_payments(principal, monthly_rate, term, yearly_extra)
 
-    # Prikaz rezultata
+    # Show results
     print_final_summary(principal, total_interest, total_principal)
 
 
