@@ -72,7 +72,7 @@ python script.py 100000 5.0 120 5000
 ```
 
 Import as Module:
-```commandline
+```bash
 from script import calculate_monthly_payment, process_yearly_payments
 
 # Calculate monthly payment
@@ -88,7 +88,7 @@ total_interest, total_principal = process_yearly_payments(
 ```
 
 ## 📂 Project Structure
-```commandline
+```bash
         .
         ├── script.py               # main logic
         ├── test_calculations.py    # Unit tests
@@ -124,7 +124,7 @@ Test markers (defined in conftest.py):
 - edge: Boundary case tests
 
 ## 📊 Example Output
-```commandline
+```bash
 MONTHLY PAYMENT SCHEDULE
 --------------------------------------------------
 Month | Payment     | Interest | Principal Paid  | Remaining
