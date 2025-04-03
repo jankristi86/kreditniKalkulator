@@ -1,5 +1,5 @@
 import sys
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, Union
 
 """
  Finansijski izračuni
@@ -135,7 +135,7 @@ def get_user_input(prompt: str, input_type: type, default: Optional[float] = Non
             print(f"Nevažeći unos. Unesite {input_type.__name__}.")
 
 
-def parse_command_line_args() -> Dict[str, float]:
+def parse_command_line_args() -> Dict[str, Union[float, int]]:
     """Parsiranje argumenata komandne linije."""
     if len(sys.argv) == 5:
         try:
