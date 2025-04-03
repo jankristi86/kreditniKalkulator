@@ -91,7 +91,7 @@ total_interest, total_principal = process_yearly_payments(
 ```bash
         .
         ├── script.py               # main logic
-        ├── test_calculations.py    # Unit tests
+        ├── test_smoke.py           # Unit tests
         ├── conftest.py             # Pytest conf 
         ├── requirements.txt        # Dependencies
         └── README.md               # Documentation
