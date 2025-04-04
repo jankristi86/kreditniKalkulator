@@ -255,11 +255,10 @@ def main():
 
     # Get parameters
     params = parse_command_line_args()
-    principal = params.get('amount') or get_user_input("Unesite iznos kredita (EUR)", float, defaults['amount'])
-    annual_rate = params.get('rate') or get_user_input("Unesite godišnju kamatnu stopu (%)", float, defaults['rate'])
-    term = params.get('term') or get_user_input("Unesite broj rata", int, defaults['term'])
-    yearly_extra = params.get('extra') or get_user_input("Unesite godišnju prevremenu otplatu (EUR)", float,
-                                                         defaults['extra'])
+    principal = params.get('amount') if 'amount' in params else get_user_input("Unesite iznos kredita (EUR)", float, defaults['amount'])
+    annual_rate = params.get('rate') if 'rate' in params else get_user_input("Unesite godišnju kamatnu stopu (%)", float, defaults['rate'])
+    term = params.get('term') if 'term' in params else get_user_input("Unesite broj rata", int, defaults['term'])
+    yearly_extra = params.get('extra') if 'extra' in params else get_user_input("Unesite godišnju prevremenu otplatu (EUR)", float, defaults['extra'])
 
     # Convert and calculate
     monthly_rate = annual_rate / 100 / 12
